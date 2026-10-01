@@ -1,0 +1,59 @@
+{
+ "id": "TR_MH_1420_Q287405",
+ "question_id": "GEN_Q287405_identity",
+ "question": "One of the participating teams in a specific ice hockey game belonged to a larger organization composed of various sports teams. I remember it was a notable ice hockey game involving a team from that kind of collective sports body, but the name of the event escapes me. Which game was it?",
+ "taxonomy": {
+  "category": "multi_hop",
+  "type": "identity"
+ },
+ "allowed_functions": [
+  "search_entity",
+  "search_property",
+  "claims",
+  "references",
+  "describe",
+  "labels",
+  "label",
+  "descriptions",
+  "edges",
+  "count_edges",
+  "degree",
+  "name",
+  "has"
+ ],
+ "limits": {
+  "turns": 30
+ },
+ "answer": {
+  "schema": "canonical",
+  "format": "Call FINAL with exactly this JSON array and no prose: [\"Q...\"]",
+  "expected": [
+   "Q287405"
+  ]
+ },
+ "grounded_code": true,
+ "reference": {
+  "model": "gemini-3.1-flash-lite",
+  "tools": [
+   "claims",
+   "edges",
+   "search_entity",
+   "search_property"
+  ],
+  "turns": 1,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a Recursive Language Model (RLM) agent exploring a frozen Wikidata snapshot through Python functions in a persistent REPL.\n\n## Interaction limit\n\n30 turns total. Graph reads are measured but not capped. llm_query is\ncapped at 80 calls for the whole run.\n\n## Available in the REPL\n\n- search_entity(text, limit=10, lang='en') -> (total_matches, [{'qid':'Q..', 'label':.., 'description':..}]). Finds ENTITIES by name across labels and aliases in six languages, accents optional. All words must match. total_matches is how many matched in all, so a large number means the name is ambiguous and the descriptions are how you tell them apart. It does NOT find properties. 1 read.\n- search_property(text, limit=10) -> (total_matches, [{'pid':'P..', 'label':.., 'lang':..}]). Finds a PROPERTY by name in any of the six languages: exact matches first, then prefixes, then substrings. 1 read.\n- claims(qid, pid=None, all_ranks=False) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'value_label':.., 'value_type':.., 'rank':.., 'qualifiers': [..]}. Not a dict — it has no .items(). value_type is one of 'wikibase-entityid' (value is a QID), 'string', 'time', 'quantity' — those four spellings and no others. The default keeps preferred statements when present, otherwise non-deprecated ones; all_ranks=True returns every statement. This rank filter can hide many values: to enumerate everything a node LINKS to, use edges(), which applies no rank filter.\n- references(qid, pid=None) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'sources': [{'property':.., 'property_label':.., 'value':..}]}. Only sourced statements appear; a statement absent from this list is unsourced.\n- describe(qid) -> {'id': 'Q..', 'instance_of': ['Q..'], 'languages': {'en': {'label':.., 'description':.., 'aliases':.., 'sitelink':..}, ..}}. Sitelinks are NESTED per language and hold a page title or None — there is no top-level 'sitelinks' key and no 'enwiki' key.\n- labels(qid) -> labels in the six target languages\n- label(qid, lang) -> one label without language fallback\n- descriptions(qid) -> descriptions in the six target languages\n- edges(qid, direction='both', pid=None, limit=None) -> outgoing and incoming graph edges as {'out': [...], 'in_': [...], ...}. Each edge is (pid, pid_label, other_qid, other_label); 'in_' is the incoming list. The exact keys are: 'id', 'label', 'deg_out', 'deg_in', 'out', 'in_', 'truncated'. There are no others — a .get() on an invented key returns your default and silently poisons the result.\n- count_edges(qid, direction='both', pid=None) -> {'out':N, 'in_':N, 'total':N}: how many edges match, without returning them. Use this BEFORE a sweep: degree() reports a node's total across every predicate, which is the wrong number for one predicate. Then page the sweep with edges(qid, direction=.., pid=.., limit=L, offset=K) — offset skips the first K MATCHING edges, so successive pages cover the set exactly once. A pool or 'reviewed' field is the count of the candidate set the question describes, not the size of your answer.\n- degree(qid) -> (out_degree, in_degree); free, costs no read\n- name(id) -> English label of an entity or property\n- has(id) -> whether an identifier exists in the graph\n- llm_query(text, instruction) -> ask the same model to interpret or\n  summarize supplied data. It cannot access the graph: pass all needed\n  evidence in text, batch related items, and validate its output in code.\n- llm_map({key: text, ...}, instruction) -> {key: answer, ...}:\n  judge many items at once. Batches for you and returns one\n  validated answer per key, so you filter in code instead of\n  reading the items yourself. A key the helper drops comes back\n  as 'NO ANSWER' rather than going missing.\n- FINAL(value) / FINAL_VAR(value) -> terminate the run\n\nNo other function is available.\n\n## Rules\n\n1. ONE ```python block per turn. Not two, not a plan cell followed by a code\n   cell — ONE. Put all your reasoning in prose BEFORE the block, then write a\n   single block that does the whole turn's work. A reply containing more than\n   one block is rejected and the turn is wasted.\n2. Keep data in variables and print only useful summaries. Output is truncated\n   to the last 10000 characters, but variables persist across turns.\n3. Every final fact must come from a function call made during this run. Do not\n   invent identifiers or rely on remembered Wikidata facts.\n4. Reuse intermediate results instead of fetching the same data again.\n5. llm_query is for judgement Python cannot make. BATCH: pass many items in one\n   call and ask for one answer per item. One call per item exhausts the budget\n   long before the task is done — about one call per ten items is the target.\n6. Use FINAL(value) or FINAL_VAR(value) to finish.\n\n## Graph navigation\n\nKeep frontiers and parent maps in variables, intersect them in Python, and\nexpand only promising unseen nodes. Never print a complete large frontier.\nBackground knowledge may rank identifiers returned by the environment, but it\nmust never generate new identifiers.\n\n\n## Answer format\n\nCall FINAL with exactly this JSON array and no prose: [\"Q...\"]\n"
+   },
+   {
+    "role": "user",
+    "content": "Question: One of the participating teams in a specific ice hockey game belonged to a larger organization composed of various sports teams. I remember it was a notable ice hockey game involving a team from that kind of collective sports body, but the name of the event escapes me. Which game was it?"
+   },
+   {
+    "role": "assistant",
+    "content": "To identify the ice hockey game, I will first search for the \"sports team\" entity and the \"has part(s) of the class\" property. Then, I will find the \"Big Six\" group, identify the \"United States men's national ice hockey team\" as a member, and finally search for the ice hockey game.\n\n```python\n# 1. Search for \"sports team\" and \"has part(s) of the class\"\nsearch_res = search_entity(\"sports team\")\nsports_team_qid = search_res[1][0]['qid']\nprop_has_part_class = search_property(\"has part(s) of the class\")[1][0]['pid']\n\n# 2. Find the \"Big Six\" group\nedges_to_big_six = edges(sports_team_qid, direction='in', pid=prop_has_part_class)\n# Filter for the entity that is a group (Big Six)\nbig_six_candidates = [e for e in edges_to_big_six['in_'] if \"Big Six\" in e[3]]\nbig_six_qid = big_six_candidates[0][2]\n\n# 3. Search for \"part of\" and find the US men's national ice hockey team\nprop_part_of = search_property(\"part of\")[1][0]['pid']\nedges_to_teams = edges(big_six_qid, direction='in', pid=prop_part_of)\nus_team_candidates = [e for e in edges_to_teams['in_'] if \"United States men's national ice hockey team\" in e[3]]\nus_team_qid = us_team_candidates[0][2]\n\n# 4. Search for \"participating team\" and \"instance of\"\nprop_participating_team = search_property(\"participating team\")[1][0]['pid']\nprop_instance_of = search_property(\"instance of\")[1][0]['pid']\n\n# 5. Find the ice hockey game\n# Search for \"ice hockey game\" to get its QID\nsearch_game_type = search_entity(\"ice hockey game\")\nice_hockey_game_qid = search_game_type[1][0]['qid']\n\nedges_to_games = edges(us_team_qid, direction='in', pid=prop_participating_team)\n\n# Filter for games that are an instance of \"ice hockey game\"\ngame_candidates = []\nfor e in edges_to_games['in_']:\n    game_qid = e[2]\n    inst_of_claims = claims(game_qid, pid=prop_instance_of)\n    for claim in inst_of_claims:\n        if claim['value'] == ice_hockey_game_qid:\n            game_candidates.append(game_qid)\n\n# The result is the specific game\nfinal_game = game_candidates[0]\nFINAL([final_game])\n```"
+   }
+  ]
+ }
+}

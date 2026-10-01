@@ -1,0 +1,13 @@
+[project]
+name = "rlm-wikidata"
+version = "0.1.0"
+description = "Recursive Language Model harness and evaluation over a frozen Wikidata graph"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.5.1",
+    "openai>=2.53.0",
+    "pyarrow>=25.0.0",
+    "tantivy>=0.26.0",
+    "tenacity>=9.1.4",
+]

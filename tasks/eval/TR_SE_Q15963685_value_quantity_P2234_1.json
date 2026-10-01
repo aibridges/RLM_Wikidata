@@ -1,0 +1,67 @@
+{
+ "id": "TR_SE_Q15963685_value_quantity_P2234_1",
+ "question_id": "SE_Q15963685_value_quantity_P2234_1",
+ "question": "I'm looking into the Iivantiira lake in Finland and was wondering if you could tell me what its total water volume is?",
+ "taxonomy": {
+  "category": "single_entity",
+  "type": "value_quantity"
+ },
+ "allowed_functions": [
+  "search_entity",
+  "search_property",
+  "claims",
+  "references",
+  "describe",
+  "labels",
+  "label",
+  "descriptions",
+  "edges",
+  "count_edges",
+  "degree",
+  "name",
+  "has"
+ ],
+ "limits": {
+  "turns": 6
+ },
+ "answer": {
+  "schema": "canonical",
+  "format": "Call FINAL with exactly this JSON object and no prose: {\"amount\": <number>, \"unit\": \"<unit name, or null>\"}",
+  "expected": {
+   "amount": 0.158,
+   "unit": "cubic kilometre"
+  }
+ },
+ "grounded_code": true,
+ "reference": {
+  "model": "gemini-3.1-flash-lite",
+  "tools": [
+   "claims",
+   "name",
+   "search_entity"
+  ],
+  "turns": 2,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a Recursive Language Model (RLM) agent exploring a frozen Wikidata snapshot through Python functions in a persistent REPL.\n\n## Interaction limit\n\n6 turns total. Graph reads are measured but not capped. llm_query is\ncapped at 80 calls for the whole run.\n\n## Available in the REPL\n\n- search_entity(text, limit=10, lang='en') -> (total_matches, [{'qid':'Q..', 'label':.., 'description':..}]). Finds ENTITIES by name across labels and aliases in six languages, accents optional. All words must match. total_matches is how many matched in all, so a large number means the name is ambiguous and the descriptions are how you tell them apart. It does NOT find properties. 1 read.\n- search_property(text, limit=10) -> (total_matches, [{'pid':'P..', 'label':.., 'lang':..}]). Finds a PROPERTY by name in any of the six languages: exact matches first, then prefixes, then substrings. 1 read.\n- claims(qid, pid=None, all_ranks=False) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'value_label':.., 'value_type':.., 'rank':.., 'qualifiers': [..]}. Not a dict — it has no .items(). value_type is one of 'wikibase-entityid' (value is a QID), 'string', 'time', 'quantity' — those four spellings and no others. The default keeps preferred statements when present, otherwise non-deprecated ones; all_ranks=True returns every statement. This rank filter can hide many values: to enumerate everything a node LINKS to, use edges(), which applies no rank filter.\n- references(qid, pid=None) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'sources': [{'property':.., 'property_label':.., 'value':..}]}. Only sourced statements appear; a statement absent from this list is unsourced.\n- describe(qid) -> {'id': 'Q..', 'instance_of': ['Q..'], 'languages': {'en': {'label':.., 'description':.., 'aliases':.., 'sitelink':..}, ..}}. Sitelinks are NESTED per language and hold a page title or None — there is no top-level 'sitelinks' key and no 'enwiki' key.\n- labels(qid) -> labels in the six target languages\n- label(qid, lang) -> one label without language fallback\n- descriptions(qid) -> descriptions in the six target languages\n- edges(qid, direction='both', pid=None, limit=None) -> outgoing and incoming graph edges as {'out': [...], 'in_': [...], ...}. Each edge is (pid, pid_label, other_qid, other_label); 'in_' is the incoming list. The exact keys are: 'id', 'label', 'deg_out', 'deg_in', 'out', 'in_', 'truncated'. There are no others — a .get() on an invented key returns your default and silently poisons the result.\n- count_edges(qid, direction='both', pid=None) -> {'out':N, 'in_':N, 'total':N}: how many edges match, without returning them. Use this BEFORE a sweep: degree() reports a node's total across every predicate, which is the wrong number for one predicate. Then page the sweep with edges(qid, direction=.., pid=.., limit=L, offset=K) — offset skips the first K MATCHING edges, so successive pages cover the set exactly once. A pool or 'reviewed' field is the count of the candidate set the question describes, not the size of your answer.\n- degree(qid) -> (out_degree, in_degree); free, costs no read\n- name(id) -> English label of an entity or property\n- has(id) -> whether an identifier exists in the graph\n- llm_query(text, instruction) -> ask the same model to interpret or\n  summarize supplied data. It cannot access the graph: pass all needed\n  evidence in text, batch related items, and validate its output in code.\n- llm_map({key: text, ...}, instruction) -> {key: answer, ...}:\n  judge many items at once. Batches for you and returns one\n  validated answer per key, so you filter in code instead of\n  reading the items yourself. A key the helper drops comes back\n  as 'NO ANSWER' rather than going missing.\n- FINAL(value) / FINAL_VAR(value) -> terminate the run\n\nNo other function is available.\n\n## Rules\n\n1. ONE ```python block per turn. Not two, not a plan cell followed by a code\n   cell — ONE. Put all your reasoning in prose BEFORE the block, then write a\n   single block that does the whole turn's work. A reply containing more than\n   one block is rejected and the turn is wasted.\n2. Keep data in variables and print only useful summaries. Output is truncated\n   to the last 10000 characters, but variables persist across turns.\n3. Every final fact must come from a function call made during this run. Do not\n   invent identifiers or rely on remembered Wikidata facts.\n4. Reuse intermediate results instead of fetching the same data again.\n5. llm_query is for judgement Python cannot make. BATCH: pass many items in one\n   call and ask for one answer per item. One call per item exhausts the budget\n   long before the task is done — about one call per ten items is the target.\n6. Use FINAL(value) or FINAL_VAR(value) to finish.\n\n## Graph navigation\n\nKeep frontiers and parent maps in variables, intersect them in Python, and\nexpand only promising unseen nodes. Never print a complete large frontier.\nBackground knowledge may rank identifiers returned by the environment, but it\nmust never generate new identifiers.\n\n\n## Answer format\n\nCall FINAL with exactly this JSON object and no prose: {\"amount\": <number>, \"unit\": \"<unit name, or null>\"}\n"
+   },
+   {
+    "role": "user",
+    "content": "Question: I'm looking into the Iivantiira lake in Finland and was wondering if you could tell me what its total water volume is?"
+   },
+   {
+    "role": "assistant",
+    "content": "I will inspect the properties of the Iivantiira lake entity to identify the correct property for water volume, as the previous search for \"volume\" did not yield the expected result.\n\n```python\n# Search for the entity Iivantiira again to confirm the QID\nsearch_res = search_entity(\"Iivantiira\")\ntarget_qid = [item['qid'] for item in search_res[1] if \"Kuhmo\" in item['description']][0]\n\n# List all claims for the entity to find the correct property for volume\nall_claims = claims(target_qid)\n# Look for a property that might represent volume (e.g., water volume)\n# I will print the property labels to identify the correct one\nfor claim in all_claims:\n    print(f\"Property: {claim['property']}, Label: {claim['property_label']}, Value: {claim['value']}\")\n\n# Based on the output, I will identify the correct PID and extract the data.\n# Assuming the property is found in the next turn after inspecting the output.\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nProperty: P625, Label: coordinate location, Value: 64.3617336/29.5346128\nProperty: P17, Label: country, Value: Q33\nProperty: P31, Label: instance of, Value: Q23397\nProperty: P31, Label: instance of, Value: Q104093746\nProperty: P131, Label: located in the administrative territorial entity, Value: Q939771\nProperty: P1566, Label: GeoNames ID, Value: 656800\nProperty: P205, Label: basin country, Value: Q33\nProperty: P2046, Label: area, Value: +32.2945 [Q712226]\nProperty: P2044, Label: elevation above sea level, Value: +173.6 [Q11573]\nProperty: P2044, Label: elevation above sea level, Value: +174 [Q11573]\nProperty: P2234, Label: volume as quantity, Value: +0.158 [Q4243638]\nProperty: P3394, Label: Finnish Lake ID, Value: 59.922.1.004\nProperty: P2547, Label: perimeter, Value: +136.462 [Q828224]\nProperty: P646, Label: Freebase ID, Value: /m/0_x8zlp\nProperty: P402, Label: OpenStreetMap relation ID, Value: 6897291\nProperty: P2326, Label: GNS Unique Feature ID, Value: -1366430\nProperty: P4119, Label: NLS Geographic Names Register Place ID, Value: 10025373\nProperty: P4614, Label: drainage basin, Value: Q18691341\n\n[turn 1/2]"
+   },
+   {
+    "role": "assistant",
+    "content": "The property for \"volume as quantity\" is P2234, and the value is +0.158 [Q4243638]. I will now retrieve the label for the unit Q4243638 to complete the request.\n\n```python\n# The unit QID is Q4243638\nunit_label = name(\"Q4243638\")\namount = 0.158\n\nresult = {\"amount\": amount, \"unit\": unit_label}\nFINAL(result)\n```"
+   }
+  ]
+ }
+}

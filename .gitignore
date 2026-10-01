@@ -1,0 +1,11 @@
+# Secrets
+.env
+
+# Large or generated data
+data/
+results/
+
+# Python
+.venv/
+__pycache__/
+*.pyc

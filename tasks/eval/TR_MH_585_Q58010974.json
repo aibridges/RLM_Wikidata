@@ -1,0 +1,100 @@
+{
+ "id": "TR_MH_585_Q58010974",
+ "question_id": "GEN_Q58010974_identity",
+ "question": "A geographical spur in Germany is located within a town that serves as a district capital. This capital also encompasses a place situated within the municipality of Tröstau. Which spur is this?",
+ "taxonomy": {
+  "category": "multi_hop",
+  "type": "identity"
+ },
+ "allowed_functions": [
+  "search_entity",
+  "search_property",
+  "claims",
+  "references",
+  "describe",
+  "labels",
+  "label",
+  "descriptions",
+  "edges",
+  "count_edges",
+  "degree",
+  "name",
+  "has"
+ ],
+ "limits": {
+  "turns": 30
+ },
+ "answer": {
+  "schema": "canonical",
+  "format": "Call FINAL with exactly this JSON array and no prose: [\"Q...\"]",
+  "expected": [
+   "Q58010974"
+  ]
+ },
+ "grounded_code": true,
+ "reference": {
+  "model": "gemini-3.1-flash-lite",
+  "tools": [
+   "claims",
+   "count_edges",
+   "edges",
+   "search_entity",
+   "search_property"
+  ],
+  "turns": 6,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a Recursive Language Model (RLM) agent exploring a frozen Wikidata snapshot through Python functions in a persistent REPL.\n\n## Interaction limit\n\n30 turns total. Graph reads are measured but not capped. llm_query is\ncapped at 80 calls for the whole run.\n\n## Available in the REPL\n\n- search_entity(text, limit=10, lang='en') -> (total_matches, [{'qid':'Q..', 'label':.., 'description':..}]). Finds ENTITIES by name across labels and aliases in six languages, accents optional. All words must match. total_matches is how many matched in all, so a large number means the name is ambiguous and the descriptions are how you tell them apart. It does NOT find properties. 1 read.\n- search_property(text, limit=10) -> (total_matches, [{'pid':'P..', 'label':.., 'lang':..}]). Finds a PROPERTY by name in any of the six languages: exact matches first, then prefixes, then substrings. 1 read.\n- claims(qid, pid=None, all_ranks=False) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'value_label':.., 'value_type':.., 'rank':.., 'qualifiers': [..]}. Not a dict — it has no .items(). value_type is one of 'wikibase-entityid' (value is a QID), 'string', 'time', 'quantity' — those four spellings and no others. The default keeps preferred statements when present, otherwise non-deprecated ones; all_ranks=True returns every statement. This rank filter can hide many values: to enumerate everything a node LINKS to, use edges(), which applies no rank filter.\n- references(qid, pid=None) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'sources': [{'property':.., 'property_label':.., 'value':..}]}. Only sourced statements appear; a statement absent from this list is unsourced.\n- describe(qid) -> {'id': 'Q..', 'instance_of': ['Q..'], 'languages': {'en': {'label':.., 'description':.., 'aliases':.., 'sitelink':..}, ..}}. Sitelinks are NESTED per language and hold a page title or None — there is no top-level 'sitelinks' key and no 'enwiki' key.\n- labels(qid) -> labels in the six target languages\n- label(qid, lang) -> one label without language fallback\n- descriptions(qid) -> descriptions in the six target languages\n- edges(qid, direction='both', pid=None, limit=None) -> outgoing and incoming graph edges as {'out': [...], 'in_': [...], ...}. Each edge is (pid, pid_label, other_qid, other_label); 'in_' is the incoming list. The exact keys are: 'id', 'label', 'deg_out', 'deg_in', 'out', 'in_', 'truncated'. There are no others — a .get() on an invented key returns your default and silently poisons the result.\n- count_edges(qid, direction='both', pid=None) -> {'out':N, 'in_':N, 'total':N}: how many edges match, without returning them. Use this BEFORE a sweep: degree() reports a node's total across every predicate, which is the wrong number for one predicate. Then page the sweep with edges(qid, direction=.., pid=.., limit=L, offset=K) — offset skips the first K MATCHING edges, so successive pages cover the set exactly once. A pool or 'reviewed' field is the count of the candidate set the question describes, not the size of your answer.\n- degree(qid) -> (out_degree, in_degree); free, costs no read\n- name(id) -> English label of an entity or property\n- has(id) -> whether an identifier exists in the graph\n- llm_query(text, instruction) -> ask the same model to interpret or\n  summarize supplied data. It cannot access the graph: pass all needed\n  evidence in text, batch related items, and validate its output in code.\n- llm_map({key: text, ...}, instruction) -> {key: answer, ...}:\n  judge many items at once. Batches for you and returns one\n  validated answer per key, so you filter in code instead of\n  reading the items yourself. A key the helper drops comes back\n  as 'NO ANSWER' rather than going missing.\n- FINAL(value) / FINAL_VAR(value) -> terminate the run\n\nNo other function is available.\n\n## Rules\n\n1. ONE ```python block per turn. Not two, not a plan cell followed by a code\n   cell — ONE. Put all your reasoning in prose BEFORE the block, then write a\n   single block that does the whole turn's work. A reply containing more than\n   one block is rejected and the turn is wasted.\n2. Keep data in variables and print only useful summaries. Output is truncated\n   to the last 10000 characters, but variables persist across turns.\n3. Every final fact must come from a function call made during this run. Do not\n   invent identifiers or rely on remembered Wikidata facts.\n4. Reuse intermediate results instead of fetching the same data again.\n5. llm_query is for judgement Python cannot make. BATCH: pass many items in one\n   call and ask for one answer per item. One call per item exhausts the budget\n   long before the task is done — about one call per ten items is the target.\n6. Use FINAL(value) or FINAL_VAR(value) to finish.\n\n## Graph navigation\n\nKeep frontiers and parent maps in variables, intersect them in Python, and\nexpand only promising unseen nodes. Never print a complete large frontier.\nBackground knowledge may rank identifiers returned by the environment, but it\nmust never generate new identifiers.\n\n\n## Answer format\n\nCall FINAL with exactly this JSON array and no prose: [\"Q...\"]\n"
+   },
+   {
+    "role": "user",
+    "content": "Question: A geographical spur in Germany is located within a town that serves as a district capital. This capital also encompasses a place situated within the municipality of Tröstau. Which spur is this?"
+   },
+   {
+    "role": "assistant",
+    "content": "I will search for \"Tröstau\" to obtain its identifier and search for the property \"located in the administrative territorial entity\" to obtain its identifier.\n\n```python\n# Search for Tröstau and the property\nsearch_res = search_entity(\"Tröstau\")\nprop_res = search_property(\"located in the administrative territorial entity\")\n\nprint(f\"Search results for Tröstau: {search_res}\")\nprint(f\"Property search: {prop_res}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nSearch results for Tröstau: (39, [{'qid': 'Q281313', 'label': 'Tröstau', 'description': 'municipality of Germany'}, {'qid': 'Q109251127', 'label': 'Tröstau', 'description': 'former railway halt in Germany'}, {'qid': 'Q49291850', 'label': 'Tröstau', 'description': 'main settlement of Tröstau in Germany'}, {'qid': 'Q24209668', 'label': 'Tröstau', 'description': 'Wikimedia disambiguation page'}, {'qid': 'Q2520280', 'label': 'Verwaltungsgemeinschaft Tröstau', 'description': 'Verwaltungsgemeinschaft in Bayern'}, {'qid': 'Q122953062', 'label': 'ATG Tröstau', 'description': 'Bavarian sports club'}, {'qid': 'Q107671422', 'label': 'Tröstau gliding site', 'description': 'glider airfield in Germany'}, {'qid': 'Q9146219', 'label': 'Category:Tröstau', 'description': 'Wikimedia category'}, {'qid': 'Q57522975', 'label': 'mayor of Tröstau', 'description': 'political position in Tröstau, Wunsiedel district, Germany'}, {'qid': 'Q131480651', 'label': 'Category:Geography of Tröstau', 'description': 'Wikimedia category'}])\nProperty search: (1, [{'pid': 'P131', 'label': 'located in the administrative territorial entity', 'lang': 'en'}])\n\n[turn 1/6]"
+   },
+   {
+    "role": "assistant",
+    "content": "I will now identify the entity located in Tröstau (Q281313) that is a \"Naturpark\" (Nature Park). I will use `edges` with the property `P131` in the `in_` direction to find entities located in Tröstau.\n\n```python\n# Find entities located in Tröstau (Q281313)\n# P131 is 'located in the administrative territorial entity'\ntrostau_qid = \"Q281313\"\np131 = \"P131\"\nedges_trostau = edges(trostau_qid, direction='in', pid=p131)\n\n# Filter for Nature Park (Naturpark)\n# I will inspect the labels of the incoming edges\nfor edge in edges_trostau['in_']:\n    print(f\"Entity: {edge[3]} (QID: {edge[2]})\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nEntity: Fichtelgebirge Nature Park (QID: Q459591)\nEntity: Leupoldsdorf (QID: Q1244145)\nEntity: Vordorfermühle (QID: Q1563648)\nEntity: Vordorf (QID: Q2533823)\nEntity: Hammergut (QID: Q21036623)\nEntity: Bildstock (QID: Q41397027)\nEntity: Cultural heritage D-4-79-161-18 in Tröstau (QID: Q41397030)\nEntity: Cultural heritage D-4-79-161-16 in Tröstau (QID: Q41397032)\nEntity: Hammergut (QID: Q41397033)\nEntity: Dienstbotenhaus (QID: Q41397035)\nEntity: Gasthaus (QID: Q41397037)\nEntity: Cultural heritage D-4-79-161-5 in Tröstau (QID: Q41397041)\nEntity: Gutshof (QID: Q41397043)\nEntity: Meilenstein (QID: Q41397044)\nEntity: Gasthaus (QID: Q41397046)\nEntity: Cultural heritage D-4-79-161-8 in Tröstau (QID: Q41397047)\nEntity: Cultural heritage D-4-79-161-9 in Tröstau (QID: Q41397049)\nEntity: Cultural heritage D-4-79-161-10 in Tröstau (QID: Q41397051)\nEntity: Cultural heritage D-4-79-161-11 in Tröstau (QID: Q41397052)\nEntity: Cultural heritage D-4-79-161-12 in Tröstau (QID: Q41397054)\nEntity: Cultural heritage D-4-79-161-19 in Tröstau (QID: Q41397055)\nEntity: Cultural heritage D-4-79-161-20 in Tröstau (QID: Q41397057)\nEntity: Cultural heritage D-4-79-161-21 in Tröstau (QID: Q41397059)\nEntity: Cultural heritage D-4-79-161-22 in Tröstau (QID: Q41397060)\nEntity: Cultural heritage D-4-79-161-23 in Tröstau (QID: Q41397061)\nEntity: Gasthaus (QID: Q41397062)\nEntity: Cultural heritage D-4-79-161-25 in Tröstau (QID: Q41397064)\nEntity: Einhaus (QID: Q41397065)\nEntity: Schulgebäude (QID: Q41397068)\nEntity: Tröstau (QID: Q49291850)\nEntity: Seehaus Fichtelgebirge (QID: Q78942568)\nEntity: Cultural heritage D-4-5937-0012 in Tröstau (QID: Q98223525)\nEntity: Cultural heritage D-4-5937-0014 in Tröstau (QID: Q98223527)\nEntity: Cultural heritage D-4-5937-0022 in Vordorfer Forst (QID: Q98382782)\nEntity: Tanzsaal Grötschenreuther Straße 7 in Tröstau (QID: Q98583928)\nEntity: Wirtshausschild Vordorf 18 in Tröstau (QID: Q98584218)\nEntity: Wirtshausschild Grötschenreuther Straße 7 in Tröstau (QID: Q98584220)\nEntity: Nebengebäude Schloßweg 14 in Tröstau (QID: Q98584466)\nEntity: Hoftor Burggutweg 4 in Tröstau (QID: Q98586090)\nEntity: Torhaus Schloßweg 14 in Tröstau (QID: Q98587104)\nEntity: Scheune Grötschenreuther Straße 20; Grötschenreuther Straße 22 in Tröstau (QID: Q98588108)\nEntity: Tröstau gliding site (QID: Q107671422)\nEntity: Tröstau (QID: Q109251127)\n\n[turn 2/6]"
+   },
+   {
+    "role": "assistant",
+    "content": "I have identified \"Fichtelgebirge Nature Park\" (Q459591) as the entity located in Tröstau. Now, I will find the district capital that encompasses this nature park by checking its \"located in the administrative territorial entity\" (P131) claims.\n\n```python\n# Check the P131 claims for Fichtelgebirge Nature Park (Q459591)\nnature_park_qid = \"Q459591\"\np131 = \"P131\"\nclaims_list = claims(nature_park_qid, pid=p131)\n\n# Print the values to identify the district capital\nfor claim in claims_list:\n    print(f\"Value: {claim['value_label']} (QID: {claim['value']})\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nValue: Kirchenlamitz (QID: Q507741)\nValue: Himmelkron (QID: Q504197)\nValue: Marktschorgast (QID: Q504662)\nValue: Kaiserhammer Forst-Ost (QID: Q11733322)\nValue: Fichtelberg (QID: Q528611)\nValue: Schwarzenbach an der Saale (QID: Q503422)\nValue: Weidenberg (QID: Q518095)\nValue: Weißdorf (QID: Q503820)\nValue: Gefrees (QID: Q504562)\nValue: Martinlamitzer Forst-Nord (QID: Q11770742)\nValue: Warmensteinach (QID: Q504438)\nValue: Kirchenpingarten (QID: Q503884)\nValue: Sparneck (QID: Q72731)\nValue: Warmensteinacher Forst-Nord (QID: Q9371035)\nValue: Zell im Fichtelgebirge (QID: Q31614)\nValue: Rehau (QID: Q49814)\nValue: Goldkronach (QID: Q503133)\nValue: Kulmain (QID: Q566580)\nValue: Neubauer Forst-Nord (QID: Q21289999)\nValue: Neusorg (QID: Q547837)\nValue: Bischofsgrün (QID: Q253123)\nValue: Pullenreuth (QID: Q533149)\nValue: Immenreuth (QID: Q547548)\nValue: Brand (QID: Q705752)\nValue: Bad Berneck im Fichtelgebirge (QID: Q504528)\nValue: Ebnath (QID: Q548598)\nValue: Waldershof (QID: Q505972)\nValue: Bischofsgrüner Forst (QID: Q21197852)\nValue: Fichtelberg (QID: Q9259406)\nValue: Thiersheim (QID: Q505732)\nValue: Weißenstadter Forst-Süd (QID: Q9371880)\nValue: Mehlmeisel (QID: Q503844)\nValue: Tröstauer Forst-Ost (QID: Q9362493)\nValue: Weißenstadter Forst-Nord (QID: Q9371881)\nValue: Martinlamitzer Forst-Süd (QID: Q11770743)\nValue: Vordorfer Forst (QID: Q9369150)\nValue: Höchstädt im Fichtelgebirge (QID: Q550572)\nValue: Tröstau (QID: Q281313)\nValue: Marktredwitz (QID: Q508231)\nValue: Neubauer Forst-Süd (QID: Q11790755)\nValue: Arzberg (QID: Q266780)\nValue: Tröstauer Forst-West (QID: Q9362494)\nValue: Bad Weißenstadt (QID: Q515933)\nValue: Selb (QID: Q49812)\nValue: Marktleuthen (QID: Q506289)\nValue: Wunsiedel (QID: Q495778)\nValue: Röslau (QID: Q513710)\nValue: Thierstein (QID: Q528114)\nValue: Schirnding (QID: Q31655)\nValue: Nagel (QID: Q367860)\nValue: Meierhöfer Seite (QID: Q11776972)\nValue: Schönwald (QID: Q49797)\nValue: Bad Alexandersbad (QID: Q513780)\nValue: Hohenberg an der Eger (QID: Q170405)\n\n[turn 3/6]"
+   },
+   {
+    "role": "assistant",
+    "content": "I will search for the property \"instance of\" to obtain its identifier, then use that identifier to check the properties of Wunsiedel.\n\n```python\n# Search for the property \"instance of\"\nprop_res = search_property(\"instance of\")\nprint(f\"Property search: {prop_res}\")\n\n# Extract the PID from the search result\np31 = prop_res[1][0]['pid']\nprint(f\"Using PID: {p31}\")\n\n# Verify Wunsiedel (Q495778) is a district capital\nwunsiedel_qid = \"Q495778\"\np131 = \"P131\"\nclaims_wunsiedel = claims(wunsiedel_qid, pid=p31)\nfor claim in claims_wunsiedel:\n    print(f\"Instance of: {claim['value_label']} (QID: {claim['value']})\")\n\n# Find entities located in Wunsiedel (P131)\ncount = count_edges(wunsiedel_qid, direction='in', pid=p131)\nprint(f\"Count of entities in Wunsiedel: {count}\")\n\n# Get the entities located in Wunsiedel\nedges_wunsiedel = edges(wunsiedel_qid, direction='in', pid=p131, limit=200)\nfor edge in edges_wunsiedel['in_']:\n    # Check if any of these are a 'spur'\n    if \"spur\" in edge[3].lower():\n        print(f\"Found potential spur: {edge[3]} (QID: {edge[2]})\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nProperty search: (1, [{'pid': 'P31', 'label': 'instance of', 'lang': 'en'}])\nUsing PID: P31\nInstance of: urban municipality in Germany (QID: Q42744322)\nInstance of: effective rural municipality (QID: Q1815926)\nInstance of: district capital (QID: Q134626)\nCount of entities in Wunsiedel: {'out': 0, 'in_': 362, 'total': 362}\n\n[turn 4/6]"
+   },
+   {
+    "role": "assistant",
+    "content": "I have confirmed that Wunsiedel (Q495778) is a district capital. I will now retrieve the 362 entities located in Wunsiedel (P131) in two pages (limit 200 each) to identify the geographical spur.\n\n```python\n# Retrieve entities located in Wunsiedel (P131) in two pages\nwunsiedel_qid = \"Q495778\"\np131 = \"P131\"\n\n# Page 1\nedges_page1 = edges(wunsiedel_qid, direction='in', pid=p131, limit=200, offset=0)\n# Page 2\nedges_page2 = edges(wunsiedel_qid, direction='in', pid=p131, limit=200, offset=200)\n\nall_entities = edges_page1['in_'] + edges_page2['in_']\n\n# Filter for entities that are a 'spur'\n# I will check the instance of (P31) for each candidate to confirm it is a 'spur'\n# First, search for the 'spur' entity type to get its QID\nspur_search = search_entity(\"spur\")\nprint(f\"Search for 'spur': {spur_search}\")\n\n# Assuming the first result is the correct one for a geographical spur\nspur_qid = spur_search[1][0]['qid']\nprint(f\"Using spur QID: {spur_qid}\")\n\n# Check each entity to see if it is an instance of the spur QID\nfor entity in all_entities:\n    entity_qid = entity[2]\n    entity_claims = claims(entity_qid, pid=\"P31\")\n    for claim in entity_claims:\n        if claim['value'] == spur_qid:\n            print(f\"Found spur: {entity[3]} (QID: {entity_qid})\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nSearch for 'spur': (2119, [{'qid': 'Q1400565', 'label': 'spur', 'description': 'geographical term for a lateral ridge or tongue of land'}, {'qid': 'Q740732', 'label': 'spur', 'description': 'metal tool used in horsemanship'}, {'qid': 'Q980172', 'label': 'Spur', 'description': 'city in Dickens County, Texas, United States'}, {'qid': 'Q1889013', 'label': 'spur', 'description': 'botanical term for a slender, tubular appendage extending backward from the base of a sepal or petal'}, {'qid': 'Q1281479', 'label': 'spur', 'description': 'architectural ornament'}, {'qid': 'Q22712734', 'label': 'Spur', 'description': 'lunar crater'}, {'qid': 'Q7581536', 'label': 'Spur', 'description': '1913-1930 American thoroughbred racehorse'}, {'qid': 'Q7414084', 'label': 'SPUR', 'description': 'Non-profit research, education, and advocacy organization focused on issues of planning and governance in San Francisco, San Jose and Oakland.'}, {'qid': 'Q2314494', 'label': 'spur', 'description': 'Wikimedia disambiguation page'}, {'qid': 'Q50139145', 'label': 'Spur', 'description': 'family name'}])\nUsing spur QID: Q1400565\nFound spur: Burgsteinfelsen (QID: Q58010974)\n\n[turn 5/6]"
+   },
+   {
+    "role": "assistant",
+    "content": "I have identified the spur \"Burgsteinfelsen\" (Q58010974) located within the district capital Wunsiedel (Q495778).\n\n```python\nFINAL([\"Q58010974\"])\n```"
+   }
+  ]
+ }
+}

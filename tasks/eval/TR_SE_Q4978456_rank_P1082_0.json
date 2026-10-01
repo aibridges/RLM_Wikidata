@@ -1,0 +1,66 @@
+{
+ "id": "TR_SE_Q4978456_rank_P1082_0",
+ "question_id": "SE_Q4978456_rank_P1082_0",
+ "question": "What is the most recent preferred population metric for the town of Franklin, New York, within the current dataset of two recorded values?",
+ "taxonomy": {
+  "category": "single_entity",
+  "type": "rank"
+ },
+ "allowed_functions": [
+  "search_entity",
+  "search_property",
+  "claims",
+  "references",
+  "describe",
+  "labels",
+  "label",
+  "descriptions",
+  "edges",
+  "count_edges",
+  "degree",
+  "name",
+  "has"
+ ],
+ "limits": {
+  "turns": 6
+ },
+ "answer": {
+  "schema": "canonical",
+  "format": "Call FINAL with exactly this JSON object and no prose: {\"amount\": <number>, \"unit\": \"<unit name, or null>\"}",
+  "expected": {
+   "amount": 1150.0,
+   "unit": null
+  }
+ },
+ "grounded_code": true,
+ "reference": {
+  "model": "gemini-3.1-flash-lite",
+  "tools": [
+   "claims",
+   "search_entity"
+  ],
+  "turns": 2,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a Recursive Language Model (RLM) agent exploring a frozen Wikidata snapshot through Python functions in a persistent REPL.\n\n## Interaction limit\n\n6 turns total. Graph reads are measured but not capped. llm_query is\ncapped at 80 calls for the whole run.\n\n## Available in the REPL\n\n- search_entity(text, limit=10, lang='en') -> (total_matches, [{'qid':'Q..', 'label':.., 'description':..}]). Finds ENTITIES by name across labels and aliases in six languages, accents optional. All words must match. total_matches is how many matched in all, so a large number means the name is ambiguous and the descriptions are how you tell them apart. It does NOT find properties. 1 read.\n- search_property(text, limit=10) -> (total_matches, [{'pid':'P..', 'label':.., 'lang':..}]). Finds a PROPERTY by name in any of the six languages: exact matches first, then prefixes, then substrings. 1 read.\n- claims(qid, pid=None, all_ranks=False) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'value_label':.., 'value_type':.., 'rank':.., 'qualifiers': [..]}. Not a dict — it has no .items(). value_type is one of 'wikibase-entityid' (value is a QID), 'string', 'time', 'quantity' — those four spellings and no others. The default keeps preferred statements when present, otherwise non-deprecated ones; all_ranks=True returns every statement. This rank filter can hide many values: to enumerate everything a node LINKS to, use edges(), which applies no rank filter.\n- references(qid, pid=None) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'sources': [{'property':.., 'property_label':.., 'value':..}]}. Only sourced statements appear; a statement absent from this list is unsourced.\n- describe(qid) -> {'id': 'Q..', 'instance_of': ['Q..'], 'languages': {'en': {'label':.., 'description':.., 'aliases':.., 'sitelink':..}, ..}}. Sitelinks are NESTED per language and hold a page title or None — there is no top-level 'sitelinks' key and no 'enwiki' key.\n- labels(qid) -> labels in the six target languages\n- label(qid, lang) -> one label without language fallback\n- descriptions(qid) -> descriptions in the six target languages\n- edges(qid, direction='both', pid=None, limit=None) -> outgoing and incoming graph edges as {'out': [...], 'in_': [...], ...}. Each edge is (pid, pid_label, other_qid, other_label); 'in_' is the incoming list. The exact keys are: 'id', 'label', 'deg_out', 'deg_in', 'out', 'in_', 'truncated'. There are no others — a .get() on an invented key returns your default and silently poisons the result.\n- count_edges(qid, direction='both', pid=None) -> {'out':N, 'in_':N, 'total':N}: how many edges match, without returning them. Use this BEFORE a sweep: degree() reports a node's total across every predicate, which is the wrong number for one predicate. Then page the sweep with edges(qid, direction=.., pid=.., limit=L, offset=K) — offset skips the first K MATCHING edges, so successive pages cover the set exactly once. A pool or 'reviewed' field is the count of the candidate set the question describes, not the size of your answer.\n- degree(qid) -> (out_degree, in_degree); free, costs no read\n- name(id) -> English label of an entity or property\n- has(id) -> whether an identifier exists in the graph\n- llm_query(text, instruction) -> ask the same model to interpret or\n  summarize supplied data. It cannot access the graph: pass all needed\n  evidence in text, batch related items, and validate its output in code.\n- llm_map({key: text, ...}, instruction) -> {key: answer, ...}:\n  judge many items at once. Batches for you and returns one\n  validated answer per key, so you filter in code instead of\n  reading the items yourself. A key the helper drops comes back\n  as 'NO ANSWER' rather than going missing.\n- FINAL(value) / FINAL_VAR(value) -> terminate the run\n\nNo other function is available.\n\n## Rules\n\n1. ONE ```python block per turn. Not two, not a plan cell followed by a code\n   cell — ONE. Put all your reasoning in prose BEFORE the block, then write a\n   single block that does the whole turn's work. A reply containing more than\n   one block is rejected and the turn is wasted.\n2. Keep data in variables and print only useful summaries. Output is truncated\n   to the last 10000 characters, but variables persist across turns.\n3. Every final fact must come from a function call made during this run. Do not\n   invent identifiers or rely on remembered Wikidata facts.\n4. Reuse intermediate results instead of fetching the same data again.\n5. llm_query is for judgement Python cannot make. BATCH: pass many items in one\n   call and ask for one answer per item. One call per item exhausts the budget\n   long before the task is done — about one call per ten items is the target.\n6. Use FINAL(value) or FINAL_VAR(value) to finish.\n\n## Graph navigation\n\nKeep frontiers and parent maps in variables, intersect them in Python, and\nexpand only promising unseen nodes. Never print a complete large frontier.\nBackground knowledge may rank identifiers returned by the environment, but it\nmust never generate new identifiers.\n\n\n## Answer format\n\nCall FINAL with exactly this JSON object and no prose: {\"amount\": <number>, \"unit\": \"<unit name, or null>\"}\n"
+   },
+   {
+    "role": "user",
+    "content": "Question: What is the most recent preferred population metric for the town of Franklin, New York, within the current dataset of two recorded values?"
+   },
+   {
+    "role": "assistant",
+    "content": "To find the correct entity for the town of Franklin, New York, I will perform a broader search and inspect the results to ensure I select the correct QID.\n\n```python\n# Search for Franklin again, looking for the town in New York\nsearch_results = search_entity(\"Franklin\")\n# Print all results to identify the correct QID for the town in Franklin County, NY\nprint(f\"Search results: {search_results[1]}\")\n\n# Based on the search results, I will identify the QID for the town of Franklin, New York.\n# Assuming the search returns the correct entity, I will proceed to get the population.\n# If the previous search was too restrictive, I will look for \"Franklin, New York\" specifically.\nsearch_results_ny = search_entity(\"Franklin, New York\")\nprint(f\"Search results for 'Franklin, New York': {search_results_ny[1]}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nSearch results: [{'qid': 'Q2696075', 'label': 'Franklin', 'description': 'family name'}, {'qid': 'Q14647745', 'label': 'Franklin', 'description': 'male given name'}, {'qid': 'Q984264', 'label': 'Franklin', 'description': 'city and county seat of Williamson County, Tennessee, United States'}, {'qid': 'Q983769', 'label': 'Franklin', 'description': 'city in Johnson County, Indiana, United States'}, {'qid': 'Q1031028', 'label': 'Franklin', 'description': '1997 Canadian/French animated television series'}, {'qid': 'Q219022', 'label': 'Franklin', 'description': 'Wikimedia disambiguation page'}, {'qid': 'Q350001', 'label': 'Franklin', 'description': 'independent city in Virginia, United States'}, {'qid': 'Q1085963', 'label': 'Franklin', 'description': 'borough\\xa0in\\xa0Sussex County,\\xa0New Jersey, United States'}, {'qid': 'Q942254', 'label': 'Franklin', 'description': 'city in Massachusetts, United States'}, {'qid': 'Q1133554', 'label': 'Franklin', 'description': 'city in Venango County, Pennsylvania, United States'}]\nSearch results for 'Franklin, New York': [{'qid': 'Q5491169', 'label': 'Franklin, New York', 'description': 'Wikimedia disambiguation page'}, {'qid': 'Q115247', 'label': 'Franklin County', 'description': 'county in New York, United States'}, {'qid': 'Q2817199', 'label': 'Franklin', 'description': 'town in New York, USA'}, {'qid': 'Q3452120', 'label': 'Franklin Square', 'description': 'census-designated place in Nassau County, New York, United States'}, {'qid': 'Q4978456', 'label': 'Franklin', 'description': 'town in Franklin County, New York, United States'}, {'qid': 'Q8471442', 'label': 'Category:Franklin County, New York', 'description': 'Wikimedia category'}, {'qid': 'Q3453224', 'label': 'Franklin', 'description': 'village in Delaware County, New York, United States of America'}, {'qid': 'Q14376407', 'label': 'Template:Franklin County, New York', 'description': 'Wikimedia template'}, {'qid': 'Q5491459', 'label': 'Franklin Delano Roosevelt High School', 'description': 'public secondary school in Hyde Park, New York, USA'}, {'qid': 'Q32220121', 'label': 'Category:Deaths in Franklin County, New York', 'description': 'Wikimedia category'}]\n\n[turn 1/2]"
+   },
+   {
+    "role": "assistant",
+    "content": "To identify the correct town of Franklin in Franklin County, New York, I will use the QID `Q4978456` identified in the previous search results. I will then retrieve the population claims for this entity to find the preferred value.\n\n```python\n# QID for \"town in Franklin County, New York, United States\"\nqid = 'Q4978456'\n\n# Property for population\npopulation_pid = 'P1082'\n\n# Get all population claims\nclaims_list = claims(qid, pid=population_pid, all_ranks=True)\n\n# Filter for the preferred claim\npreferred_claim = [c for c in claims_list if c['rank'] == 'preferred'][0]\n\n# Extract the amount\namount = preferred_claim['value']\n\n# Final result\nresult = {\"amount\": amount, \"unit\": None}\nFINAL(result)\n```"
+   }
+  ]
+ }
+}

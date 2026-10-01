@@ -1,0 +1,78 @@
+{
+ "id": "TR_MH_128_Q1544054",
+ "question_id": "GEN_Q1544054_identity",
+ "question": "A specific ethnic group is the subject of a Wikimedia category cross-referencing them with Romania, and a particular classification of musical ensemble is indigenous to this group. I am seeking to identify the specific genre of folk dance that shares this same indigenous origin. Which type of dance is it?",
+ "taxonomy": {
+  "category": "multi_hop",
+  "type": "identity"
+ },
+ "allowed_functions": [
+  "search_entity",
+  "search_property",
+  "claims",
+  "references",
+  "describe",
+  "labels",
+  "label",
+  "descriptions",
+  "edges",
+  "count_edges",
+  "degree",
+  "name",
+  "has"
+ ],
+ "limits": {
+  "turns": 30
+ },
+ "answer": {
+  "schema": "canonical",
+  "format": "Call FINAL with exactly this JSON array and no prose: [\"Q...\"]",
+  "expected": [
+   "Q1544054"
+  ]
+ },
+ "grounded_code": true,
+ "reference": {
+  "model": "gemini-3.1-flash-lite",
+  "tools": [
+   "claims",
+   "descriptions",
+   "edges",
+   "label",
+   "llm_map",
+   "search_entity",
+   "search_property"
+  ],
+  "turns": 3,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a Recursive Language Model (RLM) agent exploring a frozen Wikidata snapshot through Python functions in a persistent REPL.\n\n## Interaction limit\n\n30 turns total. Graph reads are measured but not capped. llm_query is\ncapped at 80 calls for the whole run.\n\n## Available in the REPL\n\n- search_entity(text, limit=10, lang='en') -> (total_matches, [{'qid':'Q..', 'label':.., 'description':..}]). Finds ENTITIES by name across labels and aliases in six languages, accents optional. All words must match. total_matches is how many matched in all, so a large number means the name is ambiguous and the descriptions are how you tell them apart. It does NOT find properties. 1 read.\n- search_property(text, limit=10) -> (total_matches, [{'pid':'P..', 'label':.., 'lang':..}]). Finds a PROPERTY by name in any of the six languages: exact matches first, then prefixes, then substrings. 1 read.\n- claims(qid, pid=None, all_ranks=False) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'value_label':.., 'value_type':.., 'rank':.., 'qualifiers': [..]}. Not a dict — it has no .items(). value_type is one of 'wikibase-entityid' (value is a QID), 'string', 'time', 'quantity' — those four spellings and no others. The default keeps preferred statements when present, otherwise non-deprecated ones; all_ranks=True returns every statement. This rank filter can hide many values: to enumerate everything a node LINKS to, use edges(), which applies no rank filter.\n- references(qid, pid=None) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'sources': [{'property':.., 'property_label':.., 'value':..}]}. Only sourced statements appear; a statement absent from this list is unsourced.\n- describe(qid) -> {'id': 'Q..', 'instance_of': ['Q..'], 'languages': {'en': {'label':.., 'description':.., 'aliases':.., 'sitelink':..}, ..}}. Sitelinks are NESTED per language and hold a page title or None — there is no top-level 'sitelinks' key and no 'enwiki' key.\n- labels(qid) -> labels in the six target languages\n- label(qid, lang) -> one label without language fallback\n- descriptions(qid) -> descriptions in the six target languages\n- edges(qid, direction='both', pid=None, limit=None) -> outgoing and incoming graph edges as {'out': [...], 'in_': [...], ...}. Each edge is (pid, pid_label, other_qid, other_label); 'in_' is the incoming list. The exact keys are: 'id', 'label', 'deg_out', 'deg_in', 'out', 'in_', 'truncated'. There are no others — a .get() on an invented key returns your default and silently poisons the result.\n- count_edges(qid, direction='both', pid=None) -> {'out':N, 'in_':N, 'total':N}: how many edges match, without returning them. Use this BEFORE a sweep: degree() reports a node's total across every predicate, which is the wrong number for one predicate. Then page the sweep with edges(qid, direction=.., pid=.., limit=L, offset=K) — offset skips the first K MATCHING edges, so successive pages cover the set exactly once. A pool or 'reviewed' field is the count of the candidate set the question describes, not the size of your answer.\n- degree(qid) -> (out_degree, in_degree); free, costs no read\n- name(id) -> English label of an entity or property\n- has(id) -> whether an identifier exists in the graph\n- llm_query(text, instruction) -> ask the same model to interpret or\n  summarize supplied data. It cannot access the graph: pass all needed\n  evidence in text, batch related items, and validate its output in code.\n- llm_map({key: text, ...}, instruction) -> {key: answer, ...}:\n  judge many items at once. Batches for you and returns one\n  validated answer per key, so you filter in code instead of\n  reading the items yourself. A key the helper drops comes back\n  as 'NO ANSWER' rather than going missing.\n- FINAL(value) / FINAL_VAR(value) -> terminate the run\n\nNo other function is available.\n\n## Rules\n\n1. ONE ```python block per turn. Not two, not a plan cell followed by a code\n   cell — ONE. Put all your reasoning in prose BEFORE the block, then write a\n   single block that does the whole turn's work. A reply containing more than\n   one block is rejected and the turn is wasted.\n2. Keep data in variables and print only useful summaries. Output is truncated\n   to the last 10000 characters, but variables persist across turns.\n3. Every final fact must come from a function call made during this run. Do not\n   invent identifiers or rely on remembered Wikidata facts.\n4. Reuse intermediate results instead of fetching the same data again.\n5. llm_query is for judgement Python cannot make. BATCH: pass many items in one\n   call and ask for one answer per item. One call per item exhausts the budget\n   long before the task is done — about one call per ten items is the target.\n6. Use FINAL(value) or FINAL_VAR(value) to finish.\n\n## Graph navigation\n\nKeep frontiers and parent maps in variables, intersect them in Python, and\nexpand only promising unseen nodes. Never print a complete large frontier.\nBackground knowledge may rank identifiers returned by the environment, but it\nmust never generate new identifiers.\n\n\n## Answer format\n\nCall FINAL with exactly this JSON array and no prose: [\"Q...\"]\n"
+   },
+   {
+    "role": "user",
+    "content": "Question: A specific ethnic group is the subject of a Wikimedia category cross-referencing them with Romania, and a particular classification of musical ensemble is indigenous to this group. I am seeking to identify the specific genre of folk dance that shares this same indigenous origin. Which type of dance is it?"
+   },
+   {
+    "role": "assistant",
+    "content": "To identify the folk dance, I will first locate \"Romania\" and the property \"category combines topics\" to find the relevant Wikimedia category.\n\n```python\n# Step 1: Find Romania\nsearch_res = search_entity(\"Romania\")\nromania_qid = search_res[1][0]['qid']\nprint(f\"Romania QID: {romania_qid}\")\n\n# Step 2: Find property \"category combines topics\"\nprop_res = search_property(\"category combines topics\")\ncat_combines_pid = prop_res[1][0]['pid']\nprint(f\"Property PID: {cat_combines_pid}\")\n\n# Step 3: Find categories that link to Romania via this property\n# Using edges to find incoming links to Romania\nedges_res = edges(romania_qid, direction='in', pid=cat_combines_pid)\nprint(f\"Found {len(edges_res['in_'])} incoming edges.\")\n# Filter for the category related to dissidents\ndissident_cat = [e for e in edges_res['in_'] if \"dissidents\" in e[3].lower()][0]\ndissident_qid = dissident_cat[2]\nprint(f\"Dissident Category QID: {dissident_qid}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nRomania QID: Q218\nProperty PID: P971\nFound 200 incoming edges.\nDissident Category QID: Q7718053\n\n[turn 1/3]"
+   },
+   {
+    "role": "assistant",
+    "content": "I will now examine the claims of the \"Category:Romanian dissidents\" (Q7718053) to find the ethnic group \"Romanians\" linked via the \"category combines topics\" property. Then, I will search for the property \"indigenous to\" and identify the dance genre associated with that group.\n\n```python\n# Step 3 (continued): Find the ethnic group linked to the category\n# The category should link to the ethnic group via the same property\ncat_claims = claims(dissident_qid, pid=cat_combines_pid)\n# Filter for the ethnic group (Romanians)\nromanians_qid = [c['value'] for c in cat_claims if 'Romanian' in c['value_label']][0]\nprint(f\"Romanians QID: {romanians_qid}\")\n\n# Step 4: Find property \"indigenous to\"\nindigenous_prop = search_property(\"indigenous to\")\nindigenous_pid = indigenous_prop[1][0]['pid']\nprint(f\"Indigenous PID: {indigenous_pid}\")\n\n# Step 5: Find entities indigenous to Romanians\n# We look for a type of dance\nedges_res = edges(romanians_qid, direction='in', pid=indigenous_pid)\n# Filter for instance of \"folk dance\" or similar\n# We check the instance of for the candidates\ncandidates = edges_res['in_']\ncandidate_qids = [c[2] for c in candidates]\n\n# Use llm_map to identify the dance genre\ndef check_dance(qid):\n    desc = descriptions(qid).get('en', '')\n    label = label(qid, 'en')\n    return f\"{label}: {desc}\"\n\ncandidate_info = {qid: check_dance(qid) for qid in candidate_qids[:20]}\ndance_genre = llm_map(candidate_info, \"Identify which of these is a type of folk dance.\")\n\n# Find the key that is not 'NO ANSWER'\nfinal_qid = [k for k, v in dance_genre.items() if v != 'NO ANSWER'][0]\nFINAL([final_qid])\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output (before error):\nRomanians QID: Q485150\nIndigenous PID: P2341\n\nError:\nTraceback (most recent call last):\n  File \"/Users/mohamedchenene/Documents/Pleias/projects/wikimedia_rlm/scripts/rlm_loop.py\", line 709, in execute_code\n    exec(body, namespace)  # noqa: S102\n    ~~~~^^^^^^^^^^^^^^^^^\n  File \"<repl>\", line 27, in <module>\n  File \"<repl>\", line 24, in check_dance\nUnboundLocalError: cannot access local variable 'label' where it is not associated with a value\n\n[turn 2/3]"
+   },
+   {
+    "role": "assistant",
+    "content": "I apologize for the error in the previous turn. I will now correctly retrieve the labels and descriptions for the candidates and identify the folk dance genre associated with the Romanians.\n\n```python\n# Step 5 (continued): Correctly identify the dance genre\n# We already have Romanians QID: Q485150 and Indigenous PID: P2341\nedges_res = edges(romanians_qid, direction='in', pid=indigenous_pid)\ncandidate_qids = [c[2] for c in edges_res['in_']]\n\n# Helper to get label and description safely\ndef get_info(qid):\n    l = label(qid, 'en')\n    d = descriptions(qid).get('en', '')\n    return f\"{l}: {d}\"\n\n# Batch check candidates to find the folk dance\ncandidate_info = {qid: get_info(qid) for qid in candidate_qids[:30]}\ndance_genre_map = llm_map(candidate_info, \"Identify which of these is a type of folk dance.\")\n\n# Filter for the result\nfinal_qid = [k for k, v in dance_genre_map.items() if v != 'NO ANSWER'][0]\nFINAL([final_qid])\n```"
+   }
+  ]
+ }
+}

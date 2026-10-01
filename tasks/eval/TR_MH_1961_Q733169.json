@@ -1,0 +1,92 @@
+{
+ "id": "TR_MH_1961_Q733169",
+ "question_id": "GEN_Q733169_identity",
+ "question": "A massive number exists that exceeds any scale used in daily life. This number is described in a source within a genre containing a class of things named after the concept of a 'word'. Do you know which large number I'm thinking of?",
+ "taxonomy": {
+  "category": "multi_hop",
+  "type": "identity"
+ },
+ "allowed_functions": [
+  "search_entity",
+  "search_property",
+  "claims",
+  "references",
+  "describe",
+  "labels",
+  "label",
+  "descriptions",
+  "edges",
+  "count_edges",
+  "degree",
+  "name",
+  "has"
+ ],
+ "limits": {
+  "turns": 30
+ },
+ "answer": {
+  "schema": "canonical",
+  "format": "Call FINAL with exactly this JSON array and no prose: [\"Q...\"]",
+  "expected": [
+   "Q733169"
+  ]
+ },
+ "grounded_code": true,
+ "reference": {
+  "model": "gemini-3.1-flash-lite",
+  "tools": [
+   "claims",
+   "count_edges",
+   "edges",
+   "search_entity",
+   "search_property"
+  ],
+  "turns": 5,
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a Recursive Language Model (RLM) agent exploring a frozen Wikidata snapshot through Python functions in a persistent REPL.\n\n## Interaction limit\n\n30 turns total. Graph reads are measured but not capped. llm_query is\ncapped at 80 calls for the whole run.\n\n## Available in the REPL\n\n- search_entity(text, limit=10, lang='en') -> (total_matches, [{'qid':'Q..', 'label':.., 'description':..}]). Finds ENTITIES by name across labels and aliases in six languages, accents optional. All words must match. total_matches is how many matched in all, so a large number means the name is ambiguous and the descriptions are how you tell them apart. It does NOT find properties. 1 read.\n- search_property(text, limit=10) -> (total_matches, [{'pid':'P..', 'label':.., 'lang':..}]). Finds a PROPERTY by name in any of the six languages: exact matches first, then prefixes, then substrings. 1 read.\n- claims(qid, pid=None, all_ranks=False) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'value_label':.., 'value_type':.., 'rank':.., 'qualifiers': [..]}. Not a dict — it has no .items(). value_type is one of 'wikibase-entityid' (value is a QID), 'string', 'time', 'quantity' — those four spellings and no others. The default keeps preferred statements when present, otherwise non-deprecated ones; all_ranks=True returns every statement. This rank filter can hide many values: to enumerate everything a node LINKS to, use edges(), which applies no rank filter.\n- references(qid, pid=None) -> LIST of {'property': 'P..', 'property_label':.., 'value':.., 'sources': [{'property':.., 'property_label':.., 'value':..}]}. Only sourced statements appear; a statement absent from this list is unsourced.\n- describe(qid) -> {'id': 'Q..', 'instance_of': ['Q..'], 'languages': {'en': {'label':.., 'description':.., 'aliases':.., 'sitelink':..}, ..}}. Sitelinks are NESTED per language and hold a page title or None — there is no top-level 'sitelinks' key and no 'enwiki' key.\n- labels(qid) -> labels in the six target languages\n- label(qid, lang) -> one label without language fallback\n- descriptions(qid) -> descriptions in the six target languages\n- edges(qid, direction='both', pid=None, limit=None) -> outgoing and incoming graph edges as {'out': [...], 'in_': [...], ...}. Each edge is (pid, pid_label, other_qid, other_label); 'in_' is the incoming list. The exact keys are: 'id', 'label', 'deg_out', 'deg_in', 'out', 'in_', 'truncated'. There are no others — a .get() on an invented key returns your default and silently poisons the result.\n- count_edges(qid, direction='both', pid=None) -> {'out':N, 'in_':N, 'total':N}: how many edges match, without returning them. Use this BEFORE a sweep: degree() reports a node's total across every predicate, which is the wrong number for one predicate. Then page the sweep with edges(qid, direction=.., pid=.., limit=L, offset=K) — offset skips the first K MATCHING edges, so successive pages cover the set exactly once. A pool or 'reviewed' field is the count of the candidate set the question describes, not the size of your answer.\n- degree(qid) -> (out_degree, in_degree); free, costs no read\n- name(id) -> English label of an entity or property\n- has(id) -> whether an identifier exists in the graph\n- llm_query(text, instruction) -> ask the same model to interpret or\n  summarize supplied data. It cannot access the graph: pass all needed\n  evidence in text, batch related items, and validate its output in code.\n- llm_map({key: text, ...}, instruction) -> {key: answer, ...}:\n  judge many items at once. Batches for you and returns one\n  validated answer per key, so you filter in code instead of\n  reading the items yourself. A key the helper drops comes back\n  as 'NO ANSWER' rather than going missing.\n- FINAL(value) / FINAL_VAR(value) -> terminate the run\n\nNo other function is available.\n\n## Rules\n\n1. ONE ```python block per turn. Not two, not a plan cell followed by a code\n   cell — ONE. Put all your reasoning in prose BEFORE the block, then write a\n   single block that does the whole turn's work. A reply containing more than\n   one block is rejected and the turn is wasted.\n2. Keep data in variables and print only useful summaries. Output is truncated\n   to the last 10000 characters, but variables persist across turns.\n3. Every final fact must come from a function call made during this run. Do not\n   invent identifiers or rely on remembered Wikidata facts.\n4. Reuse intermediate results instead of fetching the same data again.\n5. llm_query is for judgement Python cannot make. BATCH: pass many items in one\n   call and ask for one answer per item. One call per item exhausts the budget\n   long before the task is done — about one call per ten items is the target.\n6. Use FINAL(value) or FINAL_VAR(value) to finish.\n\n## Graph navigation\n\nKeep frontiers and parent maps in variables, intersect them in Python, and\nexpand only promising unseen nodes. Never print a complete large frontier.\nBackground knowledge may rank identifiers returned by the environment, but it\nmust never generate new identifiers.\n\n\n## Answer format\n\nCall FINAL with exactly this JSON array and no prose: [\"Q...\"]\n"
+   },
+   {
+    "role": "user",
+    "content": "Question: A massive number exists that exceeds any scale used in daily life. This number is described in a source within a genre containing a class of things named after the concept of a 'word'. Do you know which large number I'm thinking of?"
+   },
+   {
+    "role": "assistant",
+    "content": "To identify the large number, I will first search for the entity \"word\" and then find entities named after it that are classified as a dictionary.\n\n1. Search for \"word\".\n2. Search for the property \"named after\".\n3. Find entities named after \"word\" and filter for those that are dictionaries.\n\n```python\nsearch_res = search_entity(\"word\")\nprint(f\"Search results for 'word': {search_res}\")\n\nnamed_after_prop = search_property(\"named after\")\nprint(f\"Property 'named after': {named_after_prop}\")\n\n# Assuming the first result for 'word' is Q8201 (the concept of a word)\n# We look for entities that have 'named after' (P138) = Q8201\n# Then we filter for those that are a 'dictionary' (Q11059)\nword_qid = search_res[1][0]['qid']\nnamed_after_pid = named_after_prop[1][0]['pid']\n\n# Find entities named after the word concept\nedges_data = edges(word_qid, direction='in', pid=named_after_pid)\nprint(f\"Entities named after word: {edges_data['in_'][:10]}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nSearch results for 'word': (4515, [{'qid': 'Q8171', 'label': 'word', 'description': 'smallest linguistic element that will be said in isolation with semantic or pragmatic content'}, {'qid': 'Q8034303', 'label': 'Word', 'description': 'US record label; imprint of Word Entertainment'}, {'qid': 'Q295447', 'label': 'Word', 'description': 'Wikimedia disambiguation page'}, {'qid': 'Q625642', 'label': 'word', 'description': 'base memory unit handled by a computer'}, {'qid': 'Q2594083', 'label': 'word', 'description': 'finite sequence of symbols in theoretical computer science'}, {'qid': 'Q37555608', 'label': 'Word', 'description': 'family name'}, {'qid': 'Q22968946', 'label': 'Word', 'description': 'song of Sakanaction (2007)'}, {'qid': 'Q7953954', 'label': 'WORD', 'description': 'radio station in Spartanburg, United States'}, {'qid': 'Q7953955', 'label': 'WORD', 'description': 'journal of the International Linguistic Association'}, {'qid': 'Q10944557', 'label': 'word', 'description': 'written product of elements of a mathematical group and their inverses'}])\nProperty 'named after': (1, [{'pid': 'P138', 'label': 'named after', 'lang': 'en'}])\nEntities named after word: [('P138', 'named after', 'Q23622', 'dictionary'), ('P138', 'named after', 'Q110367996', 'Wordle'), ('P138', 'named after', 'Q116505001', 'Paraules al vent'), ('P138', 'named after', 'Q134715687', 'CALIMA Star')]\n\n[turn 1/5]"
+   },
+   {
+    "role": "assistant",
+    "content": "I will identify the property for \"subclass of\" by inspecting the claims of \"dictionary\" (Q23622), then find the \"reference work\" (Q1860) entity and the \"genre\" property.\n\n```python\n# Inspect claims of dictionary to find the 'subclass of' property\ndictionary_claims = claims('Q23622')\nsubclass_prop = next(c['property'] for c in dictionary_claims if c['property_label'] == 'subclass of')\nprint(f\"Subclass of property: {subclass_prop}\")\n\n# Search for 'reference work' to confirm its QID\nref_work_search = search_entity(\"reference work\")\nref_work_qid = ref_work_search[1][0]['qid']\nprint(f\"Reference work QID: {ref_work_qid}\")\n\n# Search for 'genre' property\ngenre_prop = search_property(\"genre\")\ngenre_pid = genre_prop[1][0]['pid']\nprint(f\"Genre property: {genre_pid}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nSubclass of property: P279\nReference work QID: Q13136\nGenre property: P136\n\n[turn 2/5]"
+   },
+   {
+    "role": "assistant",
+    "content": "I will now find entities that have \"reference work\" (Q13136) as their \"genre\" (P136). I will count them first to manage the data, then search for \"Guinness World Records\" among them.\n\n```python\n# Count entities with genre 'reference work'\ncount_data = count_edges('Q13136', direction='in', pid='P136')\nprint(f\"Count of entities with genre 'reference work': {count_data}\")\n\n# Get the list of entities with genre 'reference work'\n# Since the count is likely large, I will fetch a batch\nentities_with_genre = edges('Q13136', direction='in', pid='P136', limit=200)\nprint(f\"Sample of entities with genre 'reference work': {entities_with_genre['in_'][:10]}\")\n\n# Search for 'Guinness World Records' to get its QID\ngwr_search = search_entity(\"Guinness World Records\")\ngwr_qid = gwr_search[1][0]['qid']\nprint(f\"Guinness World Records QID: {gwr_qid}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nCount of entities with genre 'reference work': {'out': 0, 'in_': 256, 'total': 256}\nSample of entities with genre 'reference work': [('P136', 'genre', 'Q11191', 'The World Factbook'), ('P136', 'genre', 'Q18990', 'Hunminjeongeum'), ('P136', 'genre', 'Q24555', 'Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables'), ('P136', 'genre', 'Q41675', 'Guinness World Records'), ('P136', 'genre', 'Q164932', '1001 Albums You Must Hear Before You Die'), ('P136', 'genre', 'Q198052', 'Zhoubi Suanjing'), ('P136', 'genre', 'Q300513', 'A Patristic Greek Lexicon'), ('P136', 'genre', 'Q632290', 'The Ashley Book of Knots'), ('P136', 'genre', 'Q642074', 'Historical Dictionary of Switzerland'), ('P136', 'genre', 'Q661688', 'Lunheng')]\nGuinness World Records QID: Q41675\n\n[turn 3/5]"
+   },
+   {
+    "role": "assistant",
+    "content": "I have identified \"Guinness World Records\" (Q41675). Now I need to find the property \"described by source\" (P1343) and use it to find the large number described within that source.\n\n```python\n# Search for the property 'described by source'\ndescribed_by_prop = search_property(\"described by source\")\ndescribed_by_pid = described_by_prop[1][0]['pid']\nprint(f\"Property 'described by source': {described_by_pid}\")\n\n# Find entities described by Guinness World Records\n# We look for incoming edges to Q41675 with property P1343\ndescribed_entities = edges('Q41675', direction='in', pid=described_by_pid)\nprint(f\"Entities described by GWR: {described_entities['in_']}\")\n```"
+   },
+   {
+    "role": "user",
+    "content": "Output:\nProperty 'described by source': P1343\nEntities described by GWR: [('P1343', 'described by source', 'Q182260', 'Jeanne Calment'), ('P1343', 'described by source', 'Q733169', \"Graham's number\"), ('P1343', 'described by source', 'Q753064', 'Mill Ends Park'), ('P1343', 'described by source', 'Q1493056', 'Game Boy Camera'), ('P1343', 'described by source', 'Q4388714', 'development of Duke Nukem Forever'), ('P1343', 'described by source', 'Q10661007', 'Samsø Labyrinten'), ('P1343', 'described by source', 'Q22302045', 'Yisrael Kristal'), ('P1343', 'described by source', 'Q28859408', 'Mangala Gamana'), ('P1343', 'described by source', 'Q111585362', 'Stained glass wall of the Al Faisaliah Centre'), ('P1343', 'described by source', 'Q114289622', 'Gee Geronimo'), ('P1343', 'described by source', 'Q114570532', \"World's Largest Fountain Drink Cup\")]\n\n[turn 4/5]"
+   },
+   {
+    "role": "assistant",
+    "content": "The entity \"Graham's number\" (Q733169) is a well-known massive number described in the Guinness World Records. I have confirmed its identifier through the \"described by source\" property.\n\n```python\nFINAL([\"Q733169\"])\n```"
+   }
+  ]
+ }
+}
