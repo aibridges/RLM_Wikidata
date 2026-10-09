@@ -1,6 +1,6 @@
 # RLM_Wikidata
 
-**RLM_Wikidata** is a Recursive Language Model (RLM) harness over a frozen Wikidata graph. The model answers a question by writing Python in a REPL: it searches entities, follows relations, reads qualifiers and references, keeps intermediate results in variables, and returns an answer checked exactly against the graph.
+Built by [**Pleias**](https://pleias.fr) as part of the [**AI-BRIDGES**](https://ai-bridges.org) project at the University of London, with funding from Wikimedia Switzerland and in collaboration with Wikimedia Deutschland, **RLM_Wikidata** is a Recursive Language Model (RLM) harness over a frozen Wikidata graph. The model answers a question by writing Python in a REPL: it searches entities, follows relations, reads qualifiers and references, keeps intermediate results in variables, and returns an answer checked exactly against the graph.
 
 Wikidata describes more than 100 million entities in over 300 languages, and AI systems have no good way to explore it. SPARQL takes expertise and pasting graph data into a context window degrades as the question grows. Recursive Language Models (RLMs; Zhang, Kraska & Khattab, 2026) fit this task better: the model explores the graph in code and calls itself on the parts that matter.
 
@@ -77,3 +77,30 @@ export BASE_URL=http://127.0.0.1:8000/v1 API_KEY=EMPTY MODEL_NAME=<served model 
 .venv/bin/python scripts/bench/run_batch.py --families eval --workers 1 --tag eval
 .venv/bin/python scripts/bench/summary.py results/runs/<batch>
 ```
+## What you can do with this
+
+Everything here runs on open weights and modest hardware, so it can be used, inspected and adapted rather than only read about.
+
+**Ask Wikidata complex questions without SPARQL.** Point the harness at the graph
+and ask in plain language. Answers come back traced to the statements, qualifiers
+and references the run actually read, so you can check them. With Qwen3.8-27B on a
+single GPU, an institution can run the whole stack in-house: no commercial API, no
+data leaving your infrastructure, around $0.04 per question.
+
+**Link your collection to Wikidata.** Archives, libraries and museums can use the
+same functions to match people, places and works in their own records to Wikidata
+entities, a task usually done by hand.
+
+**Build tooling for editors.** The functions that answer questions also let a model
+walk around an entity, read its references and compare neighbouring statements.
+That makes this a starting point for tools that surface missing sources or
+cross-language inconsistencies for human review. Nothing here edits Wikidata; the
+agent reads and cites, people decide.
+
+**Train and evaluate models.** The 10,235 traces are CC0 and ready for fine-tuning.
+The construction pipeline grows new certified questions for other domains,
+languages or answer types, and any new model can be run in this harness and
+compared against the table above.
+
+**Note on scope.** The harness currently runs against a frozen February 2026
+snapshot. Connecting it to the live Wikidata API is next on our list.
