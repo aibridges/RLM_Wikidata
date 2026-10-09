@@ -81,26 +81,41 @@ export BASE_URL=http://127.0.0.1:8000/v1 API_KEY=EMPTY MODEL_NAME=<served model 
 
 Everything here runs on open weights and modest hardware, so it can be used, inspected and adapted rather than only read about.
 
-**Ask Wikidata complex questions without SPARQL.** Point the harness at the graph
+**Ask Wikidata complex questions without SPARQL** 
+Point the harness at the graph
 and ask in plain language. Answers come back traced to the statements, qualifiers
 and references the run actually read, so you can check them. With Qwen3.8-27B on a
 single GPU, an institution can run the whole stack in-house: no commercial API, no
 data leaving your infrastructure, around $0.04 per question.
 
-**Link your collection to Wikidata.** Archives, libraries and museums can use the
+**Link your collection to Wikidata** 
+Archives, libraries and museums can use the
 same functions to match people, places and works in their own records to Wikidata
 entities, a task usually done by hand.
 
-**Build tooling for editors.** The functions that answer questions also let a model
+**Build tooling for editors** 
+The functions that answer questions also let a model
 walk around an entity, read its references and compare neighbouring statements.
 That makes this a starting point for tools that surface missing sources or
 cross-language inconsistencies for human review. Nothing here edits Wikidata; the
 agent reads and cites, people decide.
 
-**Train and evaluate models.** The 10,235 traces are CC0 and ready for fine-tuning.
+**Train and evaluate models** 
+The 10,235 traces are CC0 and ready for fine-tuning.
 The construction pipeline grows new certified questions for other domains,
 languages or answer types, and any new model can be run in this harness and
 compared against the table above.
 
-**Note on scope.** The harness currently runs against a frozen February 2026
+**Note on scope** 
+The harness currently runs against a frozen February 2026
 snapshot. Connecting it to the live Wikidata API is next on our list.
+
+## How to get involved 
+We need your help with questions!
+AI-BRIDGES is collecting the questions people working in galleries, libraries, archives, museums and the Humanities would ask Wikidata if the technical barrier disappeared. They will heop shape how the next phase is evaluated. You can share them via [this doc](https://docs.google.com/document/d/1ipIzwSwf-xCtU7R7ewNCCND7vk0yha6byWMNs3OyIEc/edit?tab=t.0) or send them via email to: contact@ai-bridges.org.
+
+## About AI-BRIDGES
+[AI-BRIDGES](https://ai-bridges.org) is a research project at the Digital Humanities Research Hub, School of Advanced Study, University of London, directed by Dr. Shani Evenstein Sigalov. It works on the connection between institutional data, Linked Open Data platforms (such as Wikidata & Wikibase) and AI systems, building methods and models that let cultural, scholarly and community knowledge be used well by AI, rather than flattened by it. 
+This work is the first phase of its technical development strand.
+AI-BRIDGES is funded by the European Commission through a Marie Skłodowska-Curie Postdoctoral Research Fellowship (Grant ID 101203096). This phase was funded by Wikimedia Switzerland (WMCH), delivered by Pleias, and carried out in close
+collaboration with Wikimedia Deutschland (WMDE). Compute was provided through grant n°AD011014736R2 on the Jean Zay cluster.
